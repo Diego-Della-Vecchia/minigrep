@@ -1,5 +1,5 @@
 use std::error::Error;
-use std::fs;
+use std::{fs, vec};
 
 pub struct Config {
     pub query: String,
@@ -23,4 +23,23 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 
     println!("With text : \n{content}");
     Ok(())
+}
+
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    vec![]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn one_result() {
+        let query = "duct";
+        let content = "\
+            safe, fast, productive/
+            Pick three.";
+
+        assert!(vec!["safe, fast, productive"], search(query, content))
+    }
 }
