@@ -21,7 +21,17 @@ impl Config {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     let content = fs::read_to_string(config.file_path)?;
 
-    println!("With text : \n{content}");
+    let results = search(&config.query, &content);
+
+    if results.is_empty() {
+        println!("Results:")
+    } else {
+        println!("Results:");
+    }
+    for line in results {
+        println!("{line}");
+    }
+
     Ok(())
 }
 
@@ -49,5 +59,23 @@ safe, fast, productive.
 Pick three.";
 
         assert_eq!(vec!["safe, fast, productive."], search(query, content))
+    }
+
+    #[test]
+    fn multiple_results() {
+        let query = "is";
+        let content = "\
+This is the first line.
+This is the second line.
+And this is the third line.";
+
+        assert_eq!(
+            vec![
+                "This is the first line.",
+                "This is the second line.",
+                "And this is the third line."
+            ],
+            search(query, content)
+        )
     }
 }
