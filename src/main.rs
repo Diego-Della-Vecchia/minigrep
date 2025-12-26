@@ -1,4 +1,5 @@
 use std::env;
+use std::error::Error;
 use std::fs;
 use std::process;
 
@@ -23,11 +24,20 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     let config = Config::build(&args).unwrap_or_else(|err| {
-        println!("Problem parsing input arguments: {err}");
+        eprintln!("Problem parsing input arguments: {err}");
         process::exit(1);
     });
 
-    let file_content = fs::read_to_string(config.file_path).expect("File path needs to be valid");
+    println!("Searching for {:} in {:}", config.query, config.file_path);
 
-    println!("With text : \n{file_content}");
+    if let Err(err) = run(config) {
+        eprintln!("A problemm occured while searching: {err}");
+    };
+}
+
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let content = fs::read_to_string(config.file_path)?;
+
+    println!("With text : \n{content}");
+    Ok(())
 }
