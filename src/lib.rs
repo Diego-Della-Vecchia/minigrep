@@ -8,12 +8,11 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn build(args: &[String]) -> Result<Config, &'static str> {
-        if args.len() < 3 {
-            return Err("Not enough args supplied");
-        };
-        let query = args[1].clone();
-        let file_path = args[2].clone();
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        args.next(); // Skip the first argument which is the program name
+
+        let query = args.next().ok_or("Didn't get a query string")?;
+        let file_path = args.next().ok_or("Didn't get a file path")?;
 
         let case_sensitive = std::env::var("CASE_SENSITIVE").is_ok();
 
